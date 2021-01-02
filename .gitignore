@@ -1,3 +1,12 @@
+# IDEs
+.idea/
+.vscode/
+
+# Build Folders
+/lib
+/dist
+/build
+
 # Logs
 logs
 *.log
