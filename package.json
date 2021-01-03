@@ -1,18 +1,23 @@
 {
-	"name": "pg-crud",
+	"name": "node-pg-crud",
 	"version": "0.0.1",
 	"description": "Easy-to-use PostgreSQL CRUD Handlers + More (Node)",
-	"main": "index.js",
+	"main": "lib/index.js",
+	"types": "lib/index.d.ts",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
-		"build": "tsc"
+		"test": "echo \"Error: no test specified\" && exit 0",
+		"build": "tsc",
+		"prepare": "npm run build",
+		"prepublishOnly": "npm test",
+		"version": "git add -A src",
+		"postversion": "git push && git push --tags"
 	},
 	"files": [
 		"lib/**/*"
 	],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/howard-e/pg-crud.git"
+		"url": "git+https://github.com/howard-e/node-pg-crud.git"
 	},
 	"keywords": [
 		"node",
@@ -28,9 +33,9 @@
 	"author": "Howard Edwards",
 	"license": "Apache-2.0",
 	"bugs": {
-		"url": "https://github.com/howard-e/pg-crud/issues"
+		"url": "https://github.com/howard-e/node-pg-crud/issues"
 	},
-	"homepage": "https://github.com/howard-e/pg-crud#readme",
+	"homepage": "https://github.com/howard-e/node-pg-crud#readme",
 	"dependencies": {
 		"lodash": "^4.17.20",
 		"pg": "^8.5.1"
