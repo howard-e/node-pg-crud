@@ -1,6 +1,6 @@
 import { Pool, Client } from 'pg';
 import CRUDModel from './model';
-
+import { buildUpdateEntries, buildWhereEntries, buildSortEntries, buildValuesEntries } from './utils/helpers';
 class CRUDBuilder {
     readonly pool: Pool | Client;
     readonly name: string;
@@ -22,5 +22,12 @@ class CRUDBuilder {
         return new CRUDModel(this.pool, this.name, this.table, this.defaultSelectQuery, this.defaultSelectWhereQuery, this.tableKey)
     }
 }
+
+export {
+    buildUpdateEntries,
+    buildWhereEntries,
+    buildSortEntries,
+    buildValuesEntries
+};
 
 export default CRUDBuilder;

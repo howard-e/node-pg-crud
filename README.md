@@ -1,6 +1,6 @@
 # Overview
 
-Easy-to-use PostgreSQL CRUD Handlers + More (Node)
+Easy-to-use PostgreSQL CRUD Handlers + Utilities.
 
 ## TODO
 
