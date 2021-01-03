@@ -2,6 +2,12 @@
 
 Easy-to-use PostgreSQL CRUD Handlers + Utilities.
 
+## Installation
+
+```bash
+$ npm install node-pg-crud
+```
+
 ## TODO
 
 - [ ] Provide Usage Instructions
