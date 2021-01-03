@@ -1,0 +1,25 @@
+module.exports = {
+    verbose: true,
+    testEnvironment: 'node',
+    moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx'],
+    coveragePathIgnorePatterns: [
+        '/node_modules/',
+        '/build/',
+        '/dist/',
+        '/libs/'
+    ],
+    testPathIgnorePatterns: [
+        '/node_modules/',
+        '/build/',
+        '/dist/',
+        '/libs/'
+    ],
+    roots: [
+        '<rootDir>/src'
+    ],
+    testMatch: [
+        '**/__tests__/**/*.+(ts|tsx|js)',
+        '**/?(*.)+(spec|test).+(ts|tsx|js)'
+    ],
+    transform: {'^.+\\.(ts|tsx)$': 'ts-jest'}
+};
