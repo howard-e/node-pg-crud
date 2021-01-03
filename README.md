@@ -4,9 +4,9 @@ Easy-to-use PostgreSQL CRUD Handlers + More (Node)
 
 ## TODO
 
-- [ ] Provide Example Project to show CRUDBuilder usage on PostgreSQL models, further use of builder utility functions and helpers, etc
-- [ ] Add more comments within source
+- [ ] Provide Usage Instructions
 - [ ] Provide Documentation
-- [ ] How It Works
+- [ ] Provide Example Project
+- [ ] Provide more comments within source
+- [ ] Provide "Why Use This?" Section
 - [ ] Add Tests
-- [ ] "Why Use This?" Section
