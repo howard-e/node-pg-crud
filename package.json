@@ -2,10 +2,15 @@
 	"name": "pg-crud",
 	"version": "0.0.1",
 	"description": "Easy-to-use PostgreSQL CRUD Handlers + More (Node)",
-	"main": "index.js",
+    "main": "lib/index.js",
+    "types": "lib/index.d.ts",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
-		"build": "tsc"
+		"test": "echo \"Error: no test specified\" && exit 0",
+		"build": "tsc",
+		"prepare": "npm run build",
+		"prepublishOnly": "npm test",
+		"version": "git add -A src",
+		"postversion": "git push && git push --tags"
 	},
 	"files": [
 		"lib/**/*"
