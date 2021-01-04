@@ -40,7 +40,7 @@
   },
   "homepage": "https://github.com/howard-e/node-pg-crud#readme",
   "dependencies": {
-    "lodash": "^4.17.20",
+    "lodash.isempty": "^4.4.0",
     "pg": "^8.5.1"
   },
   "devDependencies": {
