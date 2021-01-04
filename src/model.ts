@@ -1,6 +1,6 @@
 import { buildSortEntries, buildWhereEntries } from './utils/helpers';
 import { createError } from './utils/errors';
-import { DEFAULT_LIMIT } from './utils/constants';
+import { DEFAULT_LIMIT, DEV_MODE } from './utils/constants';
 import {
     PGPool,
     PGId,
@@ -93,6 +93,8 @@ class CRUDModel {
 
             const countQueryText = `select count(*) from (select ${selectQueryText} ${customSearch || whereQueryText}) count`;
 
+            // log query if dev mode
+            if (DEV_MODE) console.debug(`crud.get.queryText::${queryText}::customSearch::${customSearch}::whereQueryText::${whereQueryText}::countQueryText::${countQueryText}::filterValues::${filterValues}`)
             this.pool.query(queryText, filterValues, async (error, result) => {
                 if (error) return reject(error);
 
@@ -129,6 +131,8 @@ class CRUDModel {
                ${whereQueryText}
             `;
 
+            // log query if dev mode
+            if (DEV_MODE) console.debug(`crud.getById.queryText::${queryText}::whereQueryText::${whereQueryText}::values::${values}`);
             this.pool.query(queryText, values, (error, result) => {
                 if (error) return reject(error);
 
@@ -159,6 +163,8 @@ class CRUDModel {
                 ${whereQueryText}
             `;
 
+            // log query if dev mode
+            if (DEV_MODE) console.debug(`crud.getByQuery.queryText::${queryText}::whereQueryText::${whereQueryText}::values::${values}`);
             this.pool.query(queryText, values, (error, result) => {
                 if (error) return reject(error);
 
@@ -179,6 +185,8 @@ class CRUDModel {
         return new Promise((resolve, reject) => {
             if (!queryText) return reject(createError(`Missing ${this.name} insert query.`, `${this.nameLower}.insert.empty.query`));
 
+            // log query if dev mode
+            if (DEV_MODE) console.debug(`crud.insert.queryText::${queryText}::values::${values}`);
             this.pool.query(queryText, values, (error, result) => {
                 if (error) return reject(error);
 
@@ -200,6 +208,8 @@ class CRUDModel {
         return new Promise((resolve, reject) => {
             if (!queryText) return reject(createError(`Missing ${this.name} update query.`, `${this.nameLower}.update.empty.query`));
 
+            // log query if dev mode
+            if (DEV_MODE) console.debug(`crud.update.queryText::${queryText}::values::${values}`);
             this.pool.query(queryText, values, (error, result) => {
                 if (error) return reject(error);
 
@@ -219,6 +229,8 @@ class CRUDModel {
      */
     remove(id: PGId, queryText = `delete from ${this.table} where id = $1`, values: any[]): Promise<boolean> {
         return new Promise((resolve, reject) => {
+            // log query if dev mode
+            if (DEV_MODE) console.debug(`crud.delete.queryText::${queryText}::values::${values}`);
             this.pool.query(queryText, values, (error, result) => {
                 if (error) return reject(error);
                 // can check result.rowCount for confirmation of deletion but not really needed
