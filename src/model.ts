@@ -29,7 +29,7 @@ class CRUDModel {
      * @param {string} table - name of table in PostgreSQL database
      * @param {string} defaultSelectQuery - default query to be used when querying data when none specified
      * @param {string} defaultSelectWhereQuery - default filter to be used when querying data if none specified
-     * @param {string} tableKey - TODO
+     * @param {string} tableKey - optional key to set when aliasing main table, eg. 'select * from users u' where 'u' is the table key
      * @param {number | 'all'} defaultLimit - the default limit to be used during the get data query; defaults to 5 if not provided
      */
     constructor(pool: PGPool, name: string, table: string, defaultSelectQuery: string, defaultSelectWhereQuery: string, tableKey?: string, defaultLimit?: number | 'all') {
