@@ -1,6 +1,6 @@
 {
   "name": "node-pg-crud",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "Easy-to-use PostgreSQL CRUD Handlers + Utilities",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -13,7 +13,7 @@
     "prepublishOnly": "npm test && npm run lint",
     "preversion": "npm run lint",
     "version": "npm run format && git add -A src",
-    "postversion": "git push && git push --tags"
+    "postversion": "git push -u HEAD && git push --tags"
   },
   "files": [
     "lib/**/*"
