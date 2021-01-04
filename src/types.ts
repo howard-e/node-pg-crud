@@ -1,3 +1,7 @@
+import { Pool, Client } from 'pg';
+
+export type PGPool = Pool | Client;
+
 export type PostgresDatabaseQueryType = {
     search?: string;
     customSearch?: string;

@@ -3,6 +3,9 @@ import { buildSortEntries, buildWhereEntries } from './utils/helpers';
 import { createError } from './utils/errors';
 import { CRUDGetResponseType, PaginationOptionsType, PostgresDatabaseQueryType } from './types';
 
+/**
+ * CRUD Model instance for PostgreSQL database tables
+ */
 class CRUDModel {
     readonly pool: Pool | Client;
     readonly name: string;
@@ -12,6 +15,14 @@ class CRUDModel {
     readonly nameLower: string;
     readonly tableKey?: string;
 
+    /**
+     * @param pool {PGPool} pool or client instance from 'pg' library
+     * @param name {string} name of CRUD Model instance (typically the name of the table)
+     * @param table {string} name of table in PostgreSQL database
+     * @param defaultSelectQuery {string} default query to be used when querying data when none specified
+     * @param defaultSelectWhereQuery {string} default filter to be used when querying data if none specified
+     * @param tableKey {string} TODO
+     */
     constructor(pool: Pool | Client, name: string, table: string, defaultSelectQuery: string, defaultSelectWhereQuery: string, tableKey?: string) {
         this.pool = pool;
         this.name = name;
