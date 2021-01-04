@@ -1,5 +1,6 @@
 import { buildSortEntries, buildWhereEntries } from './utils/helpers';
 import { createError } from './utils/errors';
+import { DEFAULT_LIMIT } from './utils/constants';
 import {
     PGPool,
     PGId,
@@ -13,23 +14,25 @@ import {
  * CRUD Model instance for PostgreSQL database tables
  */
 class CRUDModel {
-    readonly pool: PGPool;
-    readonly name: string;
-    readonly table: string;
-    readonly defaultSelectQuery: string;
-    readonly defaultSelectWhereQuery: string;
-    readonly nameLower: string;
-    readonly tableKey?: string;
+    private readonly pool: PGPool;
+    private readonly name: string;
+    private readonly table: string;
+    private readonly defaultSelectQuery: string;
+    private readonly defaultSelectWhereQuery: string;
+    private readonly nameLower: string;
+    private readonly defaultLimit: number;
+    private readonly tableKey?: string;
 
     /**
-     * @param pool {PGPool} pool or client instance from 'pg' library
-     * @param name {string} name of CRUD Model instance (typically the name of the table)
-     * @param table {string} name of table in PostgreSQL database
-     * @param defaultSelectQuery {string} default query to be used when querying data when none specified
-     * @param defaultSelectWhereQuery {string} default filter to be used when querying data if none specified
-     * @param tableKey {string} TODO
+     * @param {PGPool} pool - pool or client instance from 'pg' library
+     * @param {string} name - name of CRUD Model instance (typically the name of the table)
+     * @param {string} table - name of table in PostgreSQL database
+     * @param {string} defaultSelectQuery - default query to be used when querying data when none specified
+     * @param {string} defaultSelectWhereQuery - default filter to be used when querying data if none specified
+     * @param {string} tableKey - TODO
+     * @param {number | 'all'} defaultLimit - the default limit to be used during the get data query; defaults to 5 if not provided
      */
-    constructor(pool: PGPool, name: string, table: string, defaultSelectQuery: string, defaultSelectWhereQuery: string, tableKey?: string) {
+    constructor(pool: PGPool, name: string, table: string, defaultSelectQuery: string, defaultSelectWhereQuery: string, tableKey?: string, defaultLimit?: number | 'all') {
         this.pool = pool;
         this.name = name;
         this.table = table;
@@ -37,6 +40,9 @@ class CRUDModel {
         this.defaultSelectWhereQuery = defaultSelectWhereQuery;
         this.nameLower = name.toLowerCase();
         this.tableKey = tableKey;
+
+        // default limit set to 5 if none provided or value isn't overridden by controller
+        this.defaultLimit = defaultLimit ? (defaultLimit === 'all' ? -1 : defaultLimit) : DEFAULT_LIMIT;
     }
 
     /**
@@ -57,7 +63,9 @@ class CRUDModel {
         return new Promise((resolve, reject) => {
             const { search, customSearch, filter = {} } = query;
             let { page = 0, sort } = pagination;
-            const { limit = 5 } = pagination;
+
+            // if defaultLimit exists, use that value, else default to 5
+            const { limit = this.defaultLimit } = pagination;
             if (page < 0) page = 0; // because Postgres cannot process an offset that is negative
 
             if (!sort) sort = { id: 'asc' };
@@ -68,7 +76,7 @@ class CRUDModel {
             let showAllResults = false;
             if (limit < 0) showAllResults = true;
 
-            // limit = limit < 0 ? 'all' : limit;
+            // if limit is -1 (all), then set the OFFSET (skip) to 0 which is the same as ignoring the OFFSET w/ PostgreSQL, otherwise attempt the pagination calculations
             const skip = limit < 0 ? 0 : page * limit;
 
             // used to combine custom query and machine built query given search param and search fields

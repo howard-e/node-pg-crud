@@ -6,20 +6,22 @@ import { buildUpdateEntries, buildWhereEntries, buildSortEntries, buildValuesEnt
  * Builder to create CRUD instances for PostgreSQL database tables
  */
 class CRUDBuilder {
-    readonly pool: PGPool;
-    readonly name: string;
-    readonly table: string;
-    readonly defaultSelectQuery: string;
-    readonly defaultSelectWhereQuery: string;
-    readonly tableKey?: string;
+    private readonly pool: PGPool;
+    private readonly name: string;
+    private readonly table: string;
+    private readonly defaultSelectQuery: string;
+    private readonly defaultSelectWhereQuery: string;
+    private readonly tableKey?: string;
+
+    private defaultLimit: number | 'all' | undefined;
 
     /**
-     * @param pool {PGPool} pool or client instance from 'pg' library
-     * @param name {string} name of CRUD Model instance (typically the name of the table)
-     * @param table {string} name of table in PostgreSQL database
-     * @param defaultSelectQuery {string} default query to be used when querying data when none specified
-     * @param defaultSelectWhereQuery {string} default filter to be used when querying data if none specified
-     * @param tableKey {string} TODO
+     * @param {PGPool} pool - pool or client instance from 'pg' library
+     * @param {string} name - name of CRUD Model instance (typically the name of the table)
+     * @param {string} table - name of table in PostgreSQL database
+     * @param {string} defaultSelectQuery - default query to be used when querying data when none specified
+     * @param {string} defaultSelectWhereQuery - default filter to be used when querying data if none specified
+     * @param {string} tableKey - TODO
      */
     constructor(pool: PGPool, name: string, table: string, defaultSelectQuery: string, defaultSelectWhereQuery: string, tableKey?: string) {
         this.pool = pool;
@@ -31,9 +33,18 @@ class CRUDBuilder {
     }
 
     /**
-     * @returns CRUDModel CRUD Instance of PostgreSQL database table
+     * @param {number | 'all'} limit - the default limit to be used when query for data list (if override not specified); 5 otherwise
+     * @returns CRUDBuilder
      */
-    build = (): CRUDModel => new CRUDModel(this.pool, this.name, this.table, this.defaultSelectQuery, this.defaultSelectWhereQuery, this.tableKey);
+    setLimit = (limit: number | 'all'): CRUDBuilder => {
+        this.defaultLimit = limit;
+        return this;
+    };
+
+    /**
+     * @returns {CRUDModel} - CRUD Instance of PostgreSQL database table
+     */
+    build = (): CRUDModel => new CRUDModel(this.pool, this.name, this.table, this.defaultSelectQuery, this.defaultSelectWhereQuery, this.tableKey, this.defaultLimit);
 }
 
 export {
