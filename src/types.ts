@@ -25,6 +25,6 @@ export type CRUDGetDataResponseType = {
     data: any[];
 }
 
-export type CRUDGetByIdResponseType = {
+export type CRUDGetResponseType = {
     id: PGId;
-} | any
+} | Record<string, any> | any

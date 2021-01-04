@@ -6,7 +6,7 @@ import {
     CRUDGetDataResponseType,
     PaginationOptionsType,
     PostgresDatabaseQueryType,
-    CRUDGetByIdResponseType
+    CRUDGetResponseType
 } from './types';
 
 /**
@@ -112,7 +112,7 @@ class CRUDModel {
      * @param {string} whereQueryText - Used to define how the single result is found. Defaults to using an id.
      * @returns {Promise<object>} - Promisified query result.
      */
-    getById(id: PGId, selectQueryText = `id from ${this.table}`, whereQueryText = 'where id = $1 limit 1'): Promise<CRUDGetByIdResponseType> {
+    getById(id: PGId, selectQueryText = `id from ${this.table}`, whereQueryText = 'where id = $1 limit 1'): Promise<CRUDGetResponseType> {
         return new Promise((resolve, reject) => {
             const values = [id];
             const queryText = `
@@ -136,8 +136,9 @@ class CRUDModel {
      * @param {any[]} queryData - Field to use to define the keys and variables being used to query for an object.
      * @param {string} selectQueryText - Used to define the structure with which the data is returned for the result's object.
      * @param {boolean} returnAll - Used to define whether or not the data returned is a single option or multiple.
+     * @returns {Promise<object> | Promise<object[]>} - Promisified query result for a single or multiple items which match query.
      */
-    getByQuery(queryData: any[] = [], selectQueryText = `id from ${this.table}`, returnAll = false) {
+    getByQuery(queryData: any[] = [], selectQueryText = `id from ${this.table}`, returnAll = false): Promise<CRUDGetResponseType | CRUDGetResponseType[]> {
         return new Promise((resolve, reject) => {
             if (!queryData.length) return reject(createError(`Unable to query ${this.table}.`, `${this.nameLower}.fetch.by.query.empty.query.array`, {}));
 
@@ -164,9 +165,9 @@ class CRUDModel {
      * Base CRUD Method used to add a new object for a collection.
      * @param {string} queryText - Defines the structure with which the data is inserted.
      * @param {any[]} values - Defines the values for the object to be inserted.
-     * @returns {Promise<getById>} - The {@link getById} Promisified result.
+     * @returns {Promise<getById>} - The {@link getById} promisified result.
      */
-    insert(queryText: string, values: any[]): Promise<Record<string, any>> {
+    insert(queryText: string, values: any[]): Promise<CRUDGetResponseType> {
         return new Promise((resolve, reject) => {
             if (!queryText) return reject(createError(`Missing ${this.name} insert query.`, `${this.nameLower}.insert.empty.query`));
 
@@ -182,12 +183,12 @@ class CRUDModel {
 
     /**
      * Base CRUD Method used to update an object from a collection by a given id.
-     * @param {string} id - The object id being referenced.
+     * @param {string | number} id - The object id being referenced.
      * @param {string} queryText - Defines the structure of the data being updated.
      * @param {any[]} values - Defines the values used to update the object.
      * @returns {Promise<getById>} - The {@link getById} Promisified result.
      */
-    update(id, queryText, values) {
+    update(id: PGId, queryText: string, values: any[]): Promise<CRUDGetResponseType> {
         return new Promise((resolve, reject) => {
             if (!queryText) return reject(createError(`Missing ${this.name} update query.`, `${this.nameLower}.update.empty.query`));
 
@@ -203,12 +204,12 @@ class CRUDModel {
 
     /**
      * Base CRUD Method used to remove an object from a collection by a given id.
-     * @param {string} id - The object id being referenced.
+     * @param {string | number} id - The object id being referenced.
      * @param {string} queryText - Defines the query to select the data to be removed.
      * @param {any[]} values - Defines the values used to update the object.
-     * @returns {Promise<>} - Empty Promise result if successful.
+     * @returns {Promise<boolean>} - Promise result of true if successful.
      */
-    remove(id, queryText = `delete from ${this.table} where id = $1`, values) {
+    remove(id: PGId, queryText = `delete from ${this.table} where id = $1`, values: any[]): Promise<boolean> {
         return new Promise((resolve, reject) => {
             this.pool.query(queryText, values, (error, result) => {
                 if (error) return reject(error);
