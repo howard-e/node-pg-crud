@@ -10,8 +10,9 @@
 		"lint": "eslint . --ext .ts",
 		"format": "eslint . --ext .ts --fix",
 		"prepare": "npm run build",
-		"prepublishOnly": "npm test",
-		"version": "git add -A src",
+		"prepublishOnly": "npm test && npm run lint",
+		"preversion" : "npm run lint",
+		"version": "npm run format && git add -A src",
 		"postversion": "git push && git push --tags"
 	},
 	"files": [
