@@ -50,7 +50,8 @@ class CRUDModel {
     get(query: PostgresDatabaseQueryType = {}, pagination: PaginationOptionsType = {}, searchFields: string[] = [], selectQueryText = `* from ${this.table}`): Promise<CRUDGetResponseType> {
         return new Promise((resolve, reject) => {
             const { search, customSearch, filter = {} } = query;
-            let { page = 0, limit = 5, sort } = pagination;
+            let { page = 0, sort } = pagination;
+            const { limit = 5 } = pagination;
             if (page < 0) page = 0; // because Postgres cannot process an offset that is negative
 
             if (!sort) sort = { id: 'asc' };
