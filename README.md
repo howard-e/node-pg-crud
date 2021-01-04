@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.com/howard-e/node-pg-crud.svg?branch=main)](https://travis-ci.com/howard-e/node-pg-crud)
 [![Dependency Status](https://david-dm.org/howard-e/node-pg-crud.svg?branch=main)](https://david-dm.org/howard-e/node-pg-crud?branch=main)
 
-Easy-to-use PostgreSQL CRUD Handlers + Utilities.
+Lightweight easy-to-use PostgreSQL CRUD handlers + utilities.
 
 ## Installation
 
