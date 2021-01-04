@@ -1,3 +1,9 @@
+import { Pool, Client } from 'pg';
+
+export type PGPool = Pool | Client;
+
+export type PGId = number | string;
+
 export type PostgresDatabaseQueryType = {
     search?: string;
     customSearch?: string;
@@ -10,7 +16,7 @@ export type PaginationOptionsType = {
     sort?: Record<string, any>;
 }
 
-export type CRUDGetResponseType = {
+export type CRUDGetDataResponseType = {
     total: number;
     page: number;
     pageSize: number | string;
@@ -18,3 +24,7 @@ export type CRUDGetResponseType = {
     pages: number;
     data: any[];
 }
+
+export type CRUDGetByIdResponseType = {
+    id: PGId;
+} | any

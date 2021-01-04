@@ -1,10 +1,19 @@
-import { Pool, Client } from 'pg';
 import { buildSortEntries, buildWhereEntries } from './utils/helpers';
 import { createError } from './utils/errors';
-import { CRUDGetResponseType, PaginationOptionsType, PostgresDatabaseQueryType } from './types';
+import {
+    PGPool,
+    PGId,
+    CRUDGetDataResponseType,
+    PaginationOptionsType,
+    PostgresDatabaseQueryType,
+    CRUDGetByIdResponseType
+} from './types';
 
+/**
+ * CRUD Model instance for PostgreSQL database tables
+ */
 class CRUDModel {
-    readonly pool: Pool | Client;
+    readonly pool: PGPool;
     readonly name: string;
     readonly table: string;
     readonly defaultSelectQuery: string;
@@ -12,7 +21,15 @@ class CRUDModel {
     readonly nameLower: string;
     readonly tableKey?: string;
 
-    constructor(pool: Pool | Client, name: string, table: string, defaultSelectQuery: string, defaultSelectWhereQuery: string, tableKey?: string) {
+    /**
+     * @param pool {PGPool} pool or client instance from 'pg' library
+     * @param name {string} name of CRUD Model instance (typically the name of the table)
+     * @param table {string} name of table in PostgreSQL database
+     * @param defaultSelectQuery {string} default query to be used when querying data when none specified
+     * @param defaultSelectWhereQuery {string} default filter to be used when querying data if none specified
+     * @param tableKey {string} TODO
+     */
+    constructor(pool: PGPool, name: string, table: string, defaultSelectQuery: string, defaultSelectWhereQuery: string, tableKey?: string) {
         this.pool = pool;
         this.name = name;
         this.table = table;
@@ -36,10 +53,11 @@ class CRUDModel {
      * @param {string} selectQueryText - Used to define the structure with which the data is returned for the result's objects.
      * @returns {Promise<{total: number, page: number, pageSize: limit, results: number, pages: 1, data: []}>} - Promisified query result.
      */
-    get(query: PostgresDatabaseQueryType = {}, pagination: PaginationOptionsType = {}, searchFields: string[] = [], selectQueryText = `* from ${this.table}`): Promise<CRUDGetResponseType> {
+    get(query: PostgresDatabaseQueryType = {}, pagination: PaginationOptionsType = {}, searchFields: string[] = [], selectQueryText = `* from ${this.table}`): Promise<CRUDGetDataResponseType> {
         return new Promise((resolve, reject) => {
             const { search, customSearch, filter = {} } = query;
-            let { page = 0, limit = 5, sort } = pagination;
+            let { page = 0, sort } = pagination;
+            const { limit = 5 } = pagination;
             if (page < 0) page = 0; // because Postgres cannot process an offset that is negative
 
             if (!sort) sort = { id: 'asc' };
@@ -54,7 +72,7 @@ class CRUDModel {
             const skip = limit < 0 ? 0 : page * limit;
 
             // used to combine custom query and machine built query given search param and search fields
-            const whereClause = search && customSearch ? `${whereQueryText} ${customSearch?.replace('where', 'and')}` : customSearch || whereQueryText
+            const whereClause = search && customSearch ? `${whereQueryText} ${customSearch?.replace('where', 'and')}` : customSearch || whereQueryText;
 
             const queryText = `
             select
@@ -89,12 +107,12 @@ class CRUDModel {
 
     /**
      * Base CRUD Method used to return a single object from the collections based on an id.
-     * @param {string} id - The object id being referenced.
+     * @param {string | number} id - The object id being referenced.
      * @param {string} selectQueryText - Used to define the structure with which the data is returned for the result's object.
      * @param {string} whereQueryText - Used to define how the single result is found. Defaults to using an id.
      * @returns {Promise<object>} - Promisified query result.
      */
-    getById(id, selectQueryText = `id from ${this.table}`, whereQueryText = 'where id = $1 limit 1') {
+    getById(id: PGId, selectQueryText = `id from ${this.table}`, whereQueryText = 'where id = $1 limit 1'): Promise<CRUDGetByIdResponseType> {
         return new Promise((resolve, reject) => {
             const values = [id];
             const queryText = `
