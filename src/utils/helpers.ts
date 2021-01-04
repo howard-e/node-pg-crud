@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import isEmpty from 'lodash.isempty';
 
 const isValidEntry = (value: number | string | boolean): boolean | any => value === null || value === false || value === 0 || value === '' || value;
 
@@ -19,7 +19,7 @@ const buildWhereEntries = (query = '', searchFields: string[], filter: Record<st
         whereQueryText = searchResult;
     }
 
-    if (!_.isEmpty(filter)) {
+    if (!isEmpty(filter)) {
         const entries: any[] = [];
         filterResult = whereQueryText ? 'and (' : 'where (';
         Object.keys(filter).forEach(key => {
@@ -47,7 +47,7 @@ const buildWhereEntries = (query = '', searchFields: string[], filter: Record<st
 const buildSortEntries = (sort: Record<string, string> = {}): string => {
     let sortQueryText = '';
 
-    if (!_.isEmpty(sort)) {
+    if (!isEmpty(sort)) {
         sortQueryText = 'order by';
         Object.keys(sort).forEach((key, index, arr) => {
             sortQueryText = `${sortQueryText} ${key} ${sort[key] === 'desc' ? 'desc' : ''}${index === arr.length - 1 ? '' : ', '}`;
