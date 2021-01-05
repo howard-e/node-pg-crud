@@ -14,13 +14,19 @@ const validateRules = (method) => {
         case 'getUsers': {
             return [
                 query('page').if(query('page').exists()).toInt().customSanitizer(value => value - 1),
-                query('limit').if(query('limit').exists()).toInt(),
-                // query('search').if(query('search').exists()).customSanitizer(value => new RegExp(value, 'i'))
+                query('limit').if(query('limit').exists()).toInt()
             ]
         }
         case 'getUserById': {
             return [
                 param('id', 'User Id Missing').notEmpty().toInt()
+            ]
+        }
+        case 'createUser': {
+            return [
+                body('first_name', 'User\'s Email Address Missing').notEmpty(),
+                body('last_name', 'User\'s Email Address Missing').notEmpty(),
+                body('email', 'User\'s Email Address Missing').notEmpty()
             ]
         }
         case 'updateUser': {

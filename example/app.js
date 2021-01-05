@@ -13,5 +13,5 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use('/api', routes)
 
 app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`)
+    console.log(`node-pg-crud example app listening at http://localhost:${port}`)
 })
