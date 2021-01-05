@@ -21,6 +21,6 @@ class APIError extends Error {
     }
 }
 
-const createError = (message, error_type = '', options = {}) => new APIError({ error_type, ...options }, message);
+const createError = (message: string, error_type = '', options = {}): APIError => new APIError({ error_type, ...options }, message);
 
 export { createError };

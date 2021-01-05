@@ -1,6 +1,9 @@
+import dotenv from 'dotenv';
 import CRUDModel from './model';
 import { PGPool } from './types';
 import { buildUpdateEntries, buildWhereEntries, buildSortEntries, buildValuesEntries } from './utils/helpers';
+
+dotenv.config();
 
 /**
  * Builder to create CRUD instances for PostgreSQL database tables

@@ -1,0 +1,36 @@
+{
+  "name": "node-pg-crud-example",
+  "version": "1.0.0",
+  "description": "Example Project displaying the usage of node-pg-crud.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/howard-e/node-pg-crud.git"
+  },
+  "keywords": [
+    "example",
+    "node-pg-crud",
+    "pg",
+    "postgres",
+    "postgresql"
+  ],
+  "author": "Howard Edwards",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/howard-e/node-pg-crud/issues"
+  },
+  "homepage": "https://github.com/howard-e/node-pg-crud#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-validator": "^6.9.2",
+    "http-status-codes": "^2.1.4",
+    "node-pg-crud": "file:..",
+    "pg": "^8.5.1"
+  }
+}
