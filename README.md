@@ -15,7 +15,7 @@ $ npm install node-pg-crud
 
 - [ ] Provide Usage Instructions
 - [ ] Provide Documentation
-- [ ] Provide Example Project
+- [x] Provide Example Project
 - [ ] Provide Example Project Documentation
 - [ ] Provide "Why Use This?" Section
 - [ ] Add Tests
