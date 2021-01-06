@@ -1,7 +1,7 @@
 # Using GitHub Action from https://github.com/marketplace/actions/publish-to-npm
 name: npm-publish
 on:
-  workflow_dispatch:
+  push:
     branches:
       - main # Change this to your default branch
 jobs:
