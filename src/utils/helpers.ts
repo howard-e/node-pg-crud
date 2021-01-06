@@ -32,8 +32,12 @@ const buildWhereEntries = (query = '', searchFields: string[], filter: Record<st
         entries.forEach((entry, index) => {
             const { key, value } = entry;
 
-            filterValues.push(value);
-            filterResult = `${filterResult} ${key} = $${index + 1}`;
+            // allowing for null values to be set, work around due to SQL injection preventions
+            if (value === 'null') filterResult = `${filterResult} ${key} is null`;
+            else {
+                filterValues.push(value);
+                filterResult = `${filterResult} ${key} = $${index + 1}`;
+            }
 
             if (index !== entries.length - 1) filterResult = `${filterResult} and`;
             else filterResult = `${filterResult})`;
