@@ -233,7 +233,10 @@ class CRUDModel {
             if (DEV_MODE) console.debug(`crud.delete.queryText::${queryText}::values::${values}`);
             this.pool.query(queryText, values, (error, result) => {
                 if (error) return reject(error);
-                // can check result.rowCount for confirmation of deletion but not really needed
+
+                // TODO check result.rowCount for confirmation of deletion
+                const { rows } = result;
+
                 resolve(true);
             });
         });
