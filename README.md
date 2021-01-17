@@ -3,8 +3,7 @@
 [![Build Status](https://travis-ci.com/howard-e/node-pg-crud.svg?branch=main)](https://travis-ci.com/howard-e/node-pg-crud)
 [![Dependency Status](https://david-dm.org/howard-e/node-pg-crud.svg?branch=main)](https://david-dm.org/howard-e/node-pg-crud?branch=main)
 
-Lightweight easy-to-use PostgreSQL CRUD handlers + utilities built on top of [node-postgres](https://node-postgres.com)
-. [node-postgres](https://node-postgres.com) is required.
+Lightweight easy-to-use PostgreSQL CRUD handlers + utilities built. [node-postgres](https://node-postgres.com) is required.
 
 ## Installation
 
@@ -21,7 +20,7 @@ const CRUDBuilder = require('node-pg-crud')
 ### CRUDBuilder
 
 The `CRUDBuilder` object exposes a builder method to create a PostgreSQL Model, `CRUDModel` to be used to call typical
-CRUD Methods (`get`, `getById`, `insert`, `put`, `delete`).
+CRUD Methods (`get`, `getById`, `getByQuery`, `insert`, `put`, `delete`).
 
 #### CRUDBuilder.setLevel(limit: number | 'all')
 
@@ -43,6 +42,8 @@ const CRUDModel = new CRUDBuilder(
     TABLE_KEY // Optional key to set when aliasing main referenced table, eg. 'select * from users u' where 'u' is the table key
 ).build()
 ```
+
+<br>
 
 #### CRUDModel.get(query: {search, customSearch, filter}, pagination: {page, limit, sort}, searchFields, selectQueryText)
 
@@ -106,6 +107,8 @@ Field names used to define what the search value is used to search through.
 Used to define what is being queried and to also define the structure with which the data is returned for the result's
 objects.
 
+<br>
+
 #### CRUDModel.getById(id, selectQueryText, whereQueryText)
 
 Returns Promise for a single object returned from the database.
@@ -122,6 +125,8 @@ objects.
 ##### whereQueryText: String
 
 Used to define a custom `where` clause.
+
+<br>
 
 #### CRUDModel.getByQuery(queryData, selectQueryText, returnAll)
 
@@ -158,6 +163,8 @@ Defines the structure with which the data is inserted.
 
 Defines the values for the object to be inserted.
 
+<br>
+
 #### CRUDModel.update(id, queryText, values)
 
 Returns Promise for the updated object.
@@ -173,6 +180,8 @@ Defines the query text for the data being updated.
 ##### values: [Any]
 
 Defines the values for the object to be updated.
+
+<br>
 
 #### CRUDModel.remove(id, queryText, values)
 
