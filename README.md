@@ -3,7 +3,8 @@
 [![Build Status](https://travis-ci.com/howard-e/node-pg-crud.svg?branch=main)](https://travis-ci.com/howard-e/node-pg-crud)
 [![Dependency Status](https://david-dm.org/howard-e/node-pg-crud.svg?branch=main)](https://david-dm.org/howard-e/node-pg-crud?branch=main)
 
-Lightweight easy-to-use PostgreSQL CRUD handlers + utilities built. [node-postgres](https://node-postgres.com) is required.
+Lightweight easy-to-use PostgreSQL CRUD handlers + utilities built. [node-postgres](https://node-postgres.com) is
+required.
 
 ## Installation
 
@@ -53,16 +54,16 @@ Returns Promise for a dataset matching the query requested with the following re
 
 ```javascript
 {
-    total, // total amount of results for specific query
-    page, // current page
-    pageSize, // max number of items to be returned in data; can be 'all' or a number
-    results, // number of items returned in data
-    pages, // amount of pages given query
-    data: [ // results
-        {id: ..., ...},
-        {},
-        ...
-    ]
+   total, // total amount of results for specific query
+   page, // current page
+   pageSize, // max number of items to be returned in data; can be 'all' or a number
+   results, // number of items returned in data
+   pages, // amount of pages given query
+   data: [ // results
+      {id: ..., ...},
+      {},
+      ...
+   ]
 }
 ```
 
@@ -280,11 +281,116 @@ module.exports = {
 }
 ```
 
+### Route
+
+```javascript
+const express = require('express')
+const httpStatus = require('http-status-codes')
+const { UserModel } = require('../../models')
+const { validate, validateRules } = require('./validator')
+
+const router = express.Router()
+
+router.get('/', validateRules('getUsers'), validate, async (req, res) => {
+    const {search, filter} = req.query
+    const {page, limit, sort} = req.query
+
+    try {
+        const result = await UserModel.get({ search, filter }, { page, limit, sort })
+        res.send(result)
+    } catch (error) {
+        // log error
+        return res.status(httpStatus.SERVICE_UNAVAILABLE).send({ error: error.message })
+    }
+})
+
+router.get('/:id', validateRules('getUserById'), validate, async (req, res) => {
+    const {id} = req.params
+
+    try {
+        const result = await UserModel.getById(id)
+        res.send(result)
+    } catch (error) {
+        // log error
+        return res.status(httpStatus.SERVICE_UNAVAILABLE).send({ error: error.message })
+    }
+})
+
+router.post('/', validateRules('createUser'), async (req, res) => {
+    const params = req.body
+
+    try {
+        const result = await UserModel.insert(params)
+        res.send(result)
+    } catch (error) {
+        // log error
+        return res.status(httpStatus.SERVICE_UNAVAILABLE).send({ error: error.message })
+    }
+})
+
+router.put('/:id', validateRules('updateUser'), async (req, res) => {
+    const { id } = req.params
+    const params = req.body
+
+    try {
+        const result = await UserModel.update(id, params)
+        res.send(result)
+    } catch (error) {
+        // log error
+        return res.status(httpStatus.SERVICE_UNAVAILABLE).send({ error: error.message })
+    }
+})
+
+router.delete('/:id', validateRules('deleteUser'), async (req, res) => {
+    const { id } = req.params
+
+    try {
+        const result = await UserModel.remove(id)
+        res.status(httpStatus.NO_CONTENT).send()
+    } catch (error) {
+        // log error
+        return res.status(httpStatus.SERVICE_UNAVAILABLE).send({ error: error.message })
+    }
+})
+
+module.exports = router
+```
+
+## Running Locally
+
+1. `git clone https://github.com/howard-e/node-pg-crud.git`
+
+### Build
+
+1. `cd node-pg-crud`
+1. `npm install`
+1. `npm run build`
+
+### Example Project
+
+1. `cd example/scrips`
+1. Run `./db-populate-local.sh` to populate a PostgreSQL Database. (This script assumes a PostgreSQL database is running
+   locally on PORT: `5432`, with the username: `admin`, password: `Passw0rd1` and a database called `database`)
+1. `cd ..`
+1. Create a `.env` file with the structure shown in the `.env.example` file. `POSTGRES_CONNECTION_STRING` MUST BE SET.
+1. `npm install`
+1. `npm start`
+1. The application should now be running locally on PORT `4040` by default. This can be adjusted by overwriting
+   the `PORT` variable in the `.env` file.
+
+## Why Use node-pg-crud?
+
+**Because it's easy to use.**
+
+## License
+
+[**Apache 2.0**](https://opensource.org/licenses/Apache-2.0)
+
 ## TODO
 
 - [x] Provide Usage Instructions
 - [x] Provide Documentation
 - [x] Provide Example Project
-- [ ] Provide Example Project Documentation
-- [ ] Provide "Why Use This?" Section
+- [x] Provide Example Project Documentation
+- [x] Provide "Why Use This?" Section
 - [ ] Add Tests
