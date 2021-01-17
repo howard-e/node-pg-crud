@@ -94,7 +94,7 @@ class CRUDModel {
             const countQueryText = `select count(*) from (select ${selectQueryText} ${customSearch || whereQueryText}) count`;
 
             // log query if dev mode
-            if (DEV_MODE) console.debug(`crud.get.queryText::${queryText}::customSearch::${customSearch}::whereQueryText::${whereQueryText}::countQueryText::${countQueryText}::filterValues::${filterValues}`)
+            if (DEV_MODE) console.debug(`crud.get.queryText::${queryText}::customSearch::${customSearch}::whereQueryText::${whereQueryText}::countQueryText::${countQueryText}::filterValues::${filterValues}`);
             this.pool.query(queryText, filterValues, async (error, result) => {
                 if (error) return reject(error);
 
