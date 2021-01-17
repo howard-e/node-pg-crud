@@ -50,7 +50,7 @@ class CRUDModel {
      * @param {object} query - The query object to provide different querying options for the get collections endpoint.
      * @param {string} [query.search] - The search parameter to be used when querying collection.
      * @param {string} [query.customSearch] - A custom search query which is passed directly to the database.
-     * @param {object} [query.filter] - Search filter options to be ANDed with the other other filter options and the search query.
+     * @param {object} [query.filter] - Search filter options to be ANDed with the other filter options and the search query.
      * @param {object} pagination - The pagination object to provide different pagination options for the get collections endpoint.
      * @param {number} [pagination.page=0] - The requested page.
      * @param {limit} [pagination.limit=5] - The max results for the returned page.
@@ -144,7 +144,7 @@ class CRUDModel {
     }
 
     /**
-     * Base CRUD Method used to return a single object form the collections based on a query.
+     * Base CRUD Method used to return a single object or more from the collections based on a query.
      * @param {any[]} queryData - Field to use to define the keys and variables being used to query for an object.
      * @param {string} selectQueryText - Used to define the structure with which the data is returned for the result's object.
      * @param {boolean} returnAll - Used to define whether or not the data returned is a single option or multiple.
