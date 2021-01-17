@@ -44,8 +44,6 @@ const CRUDModel = new CRUDBuilder(
 ).build()
 ```
 
-<br>
-
 #### CRUDModel.get(query: {search, customSearch, filter}, pagination: {page, limit, sort}, searchFields, selectQueryText)
 
 Returns Promise for a dataset matching the query requested with the following result structure.
@@ -151,6 +149,8 @@ objects.
 ##### returnAll: Boolean
 
 Used to define whether the data returned is a single option or multiple.
+
+<br>
 
 #### CRUDModel.insert(queryText, values)
 
