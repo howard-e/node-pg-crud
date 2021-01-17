@@ -2,6 +2,8 @@ import isEmpty from 'lodash.isempty';
 
 const isValidEntry = (value: number | string | boolean): boolean | any => value === null || value === false || value === 0 || value === '' || value;
 
+const checkForValidValues = obj => Object.keys(obj).some(key => obj[key] !== undefined);
+
 const buildWhereEntries = (query = '', searchFields: string[], filter: Record<string, any>, tableKey?: string): { whereQueryText: string, filterValues: any[] } => {
     let whereQueryText = '';
 
@@ -19,7 +21,7 @@ const buildWhereEntries = (query = '', searchFields: string[], filter: Record<st
         whereQueryText = searchResult;
     }
 
-    if (!isEmpty(filter)) {
+    if (checkForValidValues(filter) && !isEmpty(filter)) {
         const entries: any[] = [];
         filterResult = whereQueryText ? 'and (' : 'where (';
         Object.keys(filter).forEach(key => {
@@ -32,8 +34,12 @@ const buildWhereEntries = (query = '', searchFields: string[], filter: Record<st
         entries.forEach((entry, index) => {
             const { key, value } = entry;
 
-            filterValues.push(value);
-            filterResult = `${filterResult} ${key} = $${index + 1}`;
+            // allowing for null values to be set, work around due to SQL injection preventions
+            if (value === 'null') filterResult = `${filterResult} ${key} is null`;
+            else {
+                filterValues.push(value);
+                filterResult = `${filterResult} ${key} = $${index + 1}`;
+            }
 
             if (index !== entries.length - 1) filterResult = `${filterResult} and`;
             else filterResult = `${filterResult})`;
