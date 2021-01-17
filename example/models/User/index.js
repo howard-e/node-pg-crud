@@ -19,7 +19,14 @@ from ${TABLE_NAME} ${TABLE_KEY}
 const DEFAULT_SELECT_WHERE_QUERY = `where ${TABLE_KEY}.id = $1 limit 1`
 
 // create instance of PG CRUD Model
-const CRUD = new CRUDBuilder(pool, MODEL_NAME, TABLE_NAME, DEFAULT_SELECT_QUERY, DEFAULT_SELECT_WHERE_QUERY, TABLE_KEY).build()
+const CRUD = new CRUDBuilder(
+    pool,
+    MODEL_NAME,
+    TABLE_NAME,
+    DEFAULT_SELECT_QUERY,
+    DEFAULT_SELECT_WHERE_QUERY,
+    TABLE_KEY
+).build()
 
 const get = (query = {}, pagination = {}) => {
     // use search & filter to create WHERE clause; search to do a text search across multiple columns, filter expects a where clause on a particular column
