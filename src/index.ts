@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import CRUDModel from './model';
-import { PGPool } from './types';
-import { buildUpdateEntries, buildWhereEntries, buildSortEntries, buildValuesEntries } from './utils/helpers';
+import {PGPool} from './types';
+import {buildUpdateEntries, buildWhereEntries, buildSortEntries, buildValuesEntries} from './utils/helpers';
 
 dotenv.config();
 
@@ -17,6 +17,8 @@ class CRUDBuilder {
     private readonly tableKey?: string;
 
     private defaultLimit: number | 'all' | undefined;
+    private isFuzzySearch = false;
+    private fuzzyThreshold = 0.3;
 
     /**
      * @param {PGPool} pool - pool or client instance from 'pg' library
@@ -45,9 +47,21 @@ class CRUDBuilder {
     };
 
     /**
+     * NB. Requires enabling trigrams on database instance. `create extension pg_trgm;`
+     * @param fuzzyThreshold Accepting values between 0 and 1. Defaults to 0.3.
+     */
+    enableFuzzySearch = (fuzzyThreshold = 0.3): CRUDBuilder => {
+        // todo: set threshold for entire db from here or allow flexibility per search inside model?
+
+        this.isFuzzySearch = true;
+        this.fuzzyThreshold = (fuzzyThreshold >= 0 || fuzzyThreshold <= 1) ? fuzzyThreshold : 0.3;
+        return this;
+    };
+
+    /**
      * @returns {CRUDModel} - CRUD Instance of PostgreSQL database table
      */
-    build = (): CRUDModel => new CRUDModel(this.pool, this.name, this.table, this.defaultSelectQuery, this.defaultSelectWhereQuery, this.tableKey, this.defaultLimit);
+    build = (): CRUDModel => new CRUDModel(this.pool, this.name, this.table, this.defaultSelectQuery, this.defaultSelectWhereQuery, this.tableKey, this.defaultLimit, this.isFuzzySearch, this.fuzzyThreshold);
 }
 
 export {

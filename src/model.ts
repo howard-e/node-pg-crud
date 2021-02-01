@@ -23,6 +23,9 @@ class CRUDModel {
     private readonly defaultLimit: number;
     private readonly tableKey?: string;
 
+    private readonly isFuzzySearch?: boolean;
+    private readonly fuzzyThreshold?: number;
+
     /**
      * @param {PGPool} pool - pool or client instance from 'pg' library
      * @param {string} name - name of CRUD Model instance (typically the name of the table)
@@ -32,7 +35,7 @@ class CRUDModel {
      * @param {string} tableKey - optional key to set when aliasing main table, eg. 'select * from users u' where 'u' is the table key
      * @param {number | 'all'} defaultLimit - the default limit to be used during the get data query; defaults to 5 if not provided
      */
-    constructor(pool: PGPool, name: string, table: string, defaultSelectQuery: string, defaultSelectWhereQuery: string, tableKey?: string, defaultLimit?: number | 'all') {
+    constructor(pool: PGPool, name: string, table: string, defaultSelectQuery: string, defaultSelectWhereQuery: string, tableKey?: string, defaultLimit?: number | 'all', isFuzzySearch?: boolean, fuzzyThreshold?: number) {
         this.pool = pool;
         this.name = name;
         this.table = table;
@@ -43,6 +46,10 @@ class CRUDModel {
 
         // default limit set to 5 if none provided or value isn't overridden by controller
         this.defaultLimit = defaultLimit ? (defaultLimit === 'all' ? -1 : defaultLimit) : DEFAULT_LIMIT;
+
+        // fuzzy search values
+        this.isFuzzySearch = isFuzzySearch || false;
+        this.fuzzyThreshold = fuzzyThreshold || 0.3;
     }
 
     /**
@@ -59,7 +66,16 @@ class CRUDModel {
      * @param {string} selectQueryText - Used to define the structure with which the data is returned for the result's objects.
      * @returns {Promise<{total: number, page: number, pageSize: limit, results: number, pages: 1, data: []}>} - Promisified query result.
      */
-    get(query: PostgresDatabaseQueryType = {}, pagination: PaginationOptionsType = {}, searchFields: string[] = [], selectQueryText = `* from ${this.table}`): Promise<CRUDGetDataResponseType> {
+    async get(query: PostgresDatabaseQueryType = {}, pagination: PaginationOptionsType = {}, searchFields: string[] = [], selectQueryText = `* from ${this.table}`): Promise<CRUDGetDataResponseType> {
+        try {
+            if (this.isFuzzySearch) {
+                const result = await this.pool.query(`set pg_trgm.similarity_threshold = ${this.fuzzyThreshold};`);
+                console.info(`success.set.similarity_threshold.${this.nameLower}`);
+            }
+        } catch (error) {
+            console.error(`error.set.similarity_threshold.${this.nameLower}`, error);
+        }
+
         return new Promise((resolve, reject) => {
             const { search, customSearch, filter = {} } = query;
             let { page = 0, sort } = pagination;
@@ -70,7 +86,10 @@ class CRUDModel {
 
             if (!sort) sort = { id: 'asc' };
 
-            const { whereQueryText, filterValues } = buildWhereEntries(search, searchFields, filter, this.tableKey);
+            const {
+                whereQueryText,
+                filterValues
+            } = buildWhereEntries(search, searchFields, filter, this.tableKey, this.isFuzzySearch);
             const sortQueryText = buildSortEntries(sort);
 
             let showAllResults = false;
@@ -155,7 +174,9 @@ class CRUDModel {
             if (!queryData.length) return reject(createError(`Unable to query ${this.table}.`, `${this.nameLower}.fetch.by.query.empty.query.array`, {}));
 
             const values = queryData.map(obj => obj.value);
-            const whereQueryText = `where ${queryData.map((obj, index) => `${obj.key} = $${index + 1} ${queryData.length - 1 === index ? 'limit 1' : 'and '}`)}`.replace(/,/g, '');
+
+            // TODO: make use of 'buildWhereEntries'
+            const whereQueryText = `where ${queryData.map((obj, index) => `${obj.key} = $${index + 1} ${queryData.length - 1 === index ? 'limit all' : 'and '}`)}`.replace(/,/g, '');
 
             const queryText = `
             select

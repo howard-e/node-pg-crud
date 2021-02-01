@@ -4,7 +4,7 @@ const isValidEntry = (value: number | string | boolean): boolean | any => value 
 
 const checkForValidValues = obj => Object.keys(obj).some(key => obj[key] !== undefined);
 
-const buildWhereEntries = (query = '', searchFields: string[], filter: Record<string, any>, tableKey?: string): { whereQueryText: string, filterValues: any[] } => {
+const buildWhereEntries = (query = '', searchFields: string[], filter: Record<string, any>, tableKey?: string, isFuzzySearch?: boolean): { whereQueryText: string, filterValues: any[] } => {
     let whereQueryText = '';
 
     let searchResult = '';
@@ -14,7 +14,7 @@ const buildWhereEntries = (query = '', searchFields: string[], filter: Record<st
     if (query && searchFields.length) {
         searchResult = 'where (';
         searchFields.forEach((field, index) => {
-            searchResult = `${searchResult} ${field} ilike '%${query}%'`;
+            searchResult = `${searchResult} ${field} ${isFuzzySearch ? '%' : 'ilike'} '%${query}%'`;
             if (searchFields.length > 1 && index !== searchFields.length - 1) searchResult = `${searchResult} or`;
             else searchResult = `${searchResult})`;
         });
