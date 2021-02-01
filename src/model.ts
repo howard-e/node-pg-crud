@@ -176,7 +176,7 @@ class CRUDModel {
             const values = queryData.map(obj => obj.value);
 
             // TODO: make use of 'buildWhereEntries'
-            const whereQueryText = `where ${queryData.map((obj, index) => `${obj.key} = $${index + 1} ${queryData.length - 1 === index ? 'limit all' : 'and '}`)}`.replace(/,/g, '');
+            const whereQueryText = `where ${queryData.map((obj, index) => `${obj.key} ilike $${index + 1} ${queryData.length - 1 === index ? 'limit all' : 'and '}`)}`.replace(/,/g, '');
 
             const queryText = `
             select
